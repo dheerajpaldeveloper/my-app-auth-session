@@ -31,9 +31,9 @@ export default async function AuthLayout({
   }
 
   return (
-    <html lang="en">
+    <html>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+       
       >
         {children}
       </body>
