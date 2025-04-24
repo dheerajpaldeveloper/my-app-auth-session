@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { isAuthenticated } from '@/app/utils/session';
 import { redirect } from 'next/navigation';
+import Sidebar from "./components/sidebar";
+import Header from "./components/header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,11 +23,23 @@ export default async function DashboardLayout({
   }
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html>
+      <body>
+        <div className="flex flex-row h-screen">
+            <div className="w-1/4">
+              <Sidebar />
+            </div>
+             <div className="w-full h-screen">
+            <div className="h-screen bg-gray-100">
+              {/* Header component */}
+              <Header />
+            </div>
+            <div className="bg-red-600">
+              {/* Main content goes here */}
+            {children}
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );

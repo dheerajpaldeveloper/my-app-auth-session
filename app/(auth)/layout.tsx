@@ -4,15 +4,6 @@ import "../globals.css";
 import { isAuthenticated } from '@/app/utils/session';
 import { redirect } from 'next/navigation';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,10 +22,8 @@ export default async function AuthLayout({
   }
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html>
+      <body>
         {children}
       </body>
     </html>
