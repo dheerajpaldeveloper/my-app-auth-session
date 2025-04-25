@@ -30,14 +30,16 @@ export default function page() {
       }
 
       const data = await response.json();
-      console.log("Response data :", response);
+      console.log("Response :", response);
       
       if (!data.success) {
         setError(data.message || 'Invalid username or password');
       }
       if (response.ok) {
-       
-        window.location.href = '/';
+       console.log("res data", data.data.username);
+        // window.location.href = '/';
+        localStorage.setItem("username", data.data.username);
+        window.location.href = "/";
         return;
       }
     } catch (error) {

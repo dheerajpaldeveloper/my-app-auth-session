@@ -17,7 +17,6 @@ export async function POST(request: Request) {
 
 
     try {
-        const { username, password } = await request.json();
 
         let { data: users, error } = await supabase
             .from('users')
@@ -36,40 +35,12 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
+    
+        return NextResponse.json(
+            { success: true, message: 'Users fetched successfully', data: users },
+            { status: 200 }
+        );
 
-        const matchedUser = users.find((user) => user.username === username);
-
-        if(matchedUser && matchedUser.password === password) {
-            // Create response
-            const response = NextResponse.json(
-                { 
-                    success: true, 
-                    message: 'Login successful',
-                    data: matchedUser
-                },
-                { status: 200 }
-            );
-
-            // Set session cookie
-            response.cookies.set('session', JSON.stringify({
-                username: matchedUser.username,
-                loggedIn: true,
-                timestamp: Date.now()
-            }), {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 60 * 60 * 24, // 24 hours
-                path: '/'
-            });
-
-            return response;
-        } else {
-            return NextResponse.json(
-                { success: false, message: 'Invalid credentials' },
-                { status: 401 }
-            );
-        }
 
     } catch (error: any) {
         console.error('[API /api/login] Error processing login request:', error);

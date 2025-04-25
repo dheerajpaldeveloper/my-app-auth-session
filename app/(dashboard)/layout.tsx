@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { isAuthenticated } from '@/app/utils/session';
-import { redirect } from 'next/navigation';
+import { isAuthenticated } from "@/app/utils/session";
+import { redirect } from "next/navigation";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,30 +16,26 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const isAuth = await isAuthenticated();
-  
+
   if (!isAuth) {
-    redirect('/login');
+    redirect("/login");
   }
 
   return (
-    <html>
-      <body>
-        <div className="flex flex-row h-screen">
-            <div className="w-1/4">
-              <Sidebar />
-            </div>
-             <div className="w-full h-screen">
-            <div className="h-screen bg-gray-100">
-              {/* Header component */}
-              <Header />
-            </div>
-            <div className="bg-red-600">
-              {/* Main content goes here */}
-            {children}
-            </div>
-          </div>
+    <div className="flex flex-row ">
+      <div className="w-1/4">
+        <Sidebar />
+      </div>
+      <div className="w-full">
+        <div className=" bg-gray-100">
+          {/* Header component */}
+          <Header />
         </div>
-      </body>
-    </html>
+        <div>
+          {/* Main content goes here */}
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
