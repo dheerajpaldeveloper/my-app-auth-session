@@ -14,7 +14,7 @@ export async function POST(request: Request) {
             { status: 500 }
         );
     }
-
+    console.log('Supabase client initialized successfully');
 
     try {
 

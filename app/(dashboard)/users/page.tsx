@@ -1,6 +1,6 @@
 "use client"; // 👈 Required for using hooks and browser APIs
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -12,32 +12,37 @@ export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const memoizedData = useMemo(() => data, [data]);
 
+  
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: "username", password: "password" }),
-        });
-
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText);
+    if (memoizedData !== null) {
+      const fetchUser = async () => {
+        try {
+          const res = await fetch("/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: "username", password: "password" }),
+          });
+  
+          if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText);
+          }
+  
+          const result = await res.json();
+          setData(result);
+        } catch (err: any) {
+          setError(err.message);
         }
-
-        const result = await res.json();
-        setData(result);
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
-    fetchUser();
-  }, []);
+      };
+  
+      fetchUser();
+    }
+   
+  }, [memoizedData]);
 
   const handleCreate = async () => {
     try {
@@ -57,7 +62,16 @@ export default function Page() {
         setUsername(""); 
         setEmail("");
         setPassword("");
-      }
+        // const user = await fetch("/api/users", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ username: "username", password: "password" }),
+        // });
+        // setData(user.json());
+        // console.log("User data: ", data);
+      } 
     } catch (error) {
       console.error("Error creating user: ", error);
     }
