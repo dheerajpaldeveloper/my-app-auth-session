@@ -1,6 +1,6 @@
 "use client"; // 👈 Required for using hooks and browser APIs
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -12,38 +12,35 @@ export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const memoizedData = useMemo(() => data, [data]);
+  const [isUpdate, setIsUpdate] = useState(false);
 
-  
   useEffect(() => {
-    if (memoizedData !== null) {
-      const fetchUser = async () => {
-        try {
-          const res = await fetch("/api/users", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username: "username", password: "password" }),
-          });
-  
-          if (!res.ok) {
-            const errText = await res.text();
-            throw new Error(errText);
-          }
-  
-          const result = await res.json();
-          setData(result);
-        } catch (err: any) {
-          setError(err.message);
-        }
-      };
-  
-      fetchUser();
-    }
-   
-  }, [memoizedData]);
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: "username", password: "password" }),
+        });
 
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText);
+        }
+
+        const result = await res.json();
+        setData(result);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  //  for create user
   const handleCreate = async () => {
     try {
       const res = await fetch("/api/create", {
@@ -59,30 +56,109 @@ export default function Page() {
       } else {
         console.log("User created successfully");
         setIsVisible(false);
-        setUsername(""); 
+        setUsername("");
         setEmail("");
         setPassword("");
-        // const user = await fetch("/api/users", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({ username: "username", password: "password" }),
-        // });
-        // setData(user.json());
-        // console.log("User data: ", data);
-      } 
+        const user = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: "username", password: "password" }),
+        });
+        const userData = await user.json();
+        setData(userData);
+        console.log("User data: ", userData);
+      }
     } catch (error) {
       console.error("Error creating user: ", error);
     }
   };
 
-  const handleEdit = (i: any) => {
-    console.log("Edit item: ", i);
-  };
+  //  for edit user
+  const handleEdit = async (item: any) => {
+    console.log("Edit item: ", item);
+    setIsUpdate(!isUpdate);
+    setUsername(item.username);
+    setEmail(item.email);
 
-  const handleDelete = () => {
-    console.log("Delete button clicked");
+   
+  };
+  const handleUpdate = async (id: any) => {
+
+    console.log("Update item: ", username,email,id);
+    try {
+      const res = await fetch("/api/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          id: id
+        }),
+      });
+      if (!res.ok) {
+        console.error("user not edit");
+      }else{
+        console.log("user edit")
+        setIsUpdate(false);
+        try {
+          const user = await fetch("/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: "username", password: "password" }),
+          });
+          const userData = await user.json();
+          setData(userData);
+          console.log("User data: ", userData);
+        }
+        catch (error) {
+          console.error("Error creating user: ", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error creating user: ", error);
+      
+    }
+        
+      }
+
+  //  for delete user
+  const handleDelete = async (item: any) => {
+    try {
+      const res = await fetch("/api/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: item.username,
+          email: item.email,
+          password: item.password,
+        }),
+      });
+
+      if (!res.ok) {
+        console.error("Error creating user");
+      } else {
+        console.log("user deleted successfully");
+        const user = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const userData = await user.json();
+        setData(userData);
+        console.log("User data: ", userData);
+      }
+    } catch (error) {
+      console.error("Error creating user: ", error);
+    }
   };
 
   return (
@@ -105,7 +181,7 @@ export default function Page() {
         <form
           className="fixed inset-0 flex items-center justify-center"
           onSubmit={(e) => {
-            e.preventDefault(); 
+            e.preventDefault();
             handleCreate();
           }}
         >
@@ -202,12 +278,68 @@ export default function Page() {
                         <MdOutlineModeEditOutline size={20} />
                       </button>
                       <button
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(item)}
                         className="text-red-500 hover:text-red-700"
                       >
                         <MdDeleteForever size={20} />
                       </button>
                     </div>
+                    {/* Edit Form */}
+                    {isUpdate && (
+                      <form
+                        className="fixed inset-0 flex items-center justify-center"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          handleUpdate(item.id);
+                        }}
+                      >
+                        <div className="bg-white p-4 rounded shadow">
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <h2 className="text-lg font-bold mb-2">
+                               Edit User
+                              </h2>
+                              <button
+                                type="button"
+                                onClick={() => setIsUpdate(false)}
+                                className="right-2 text-gray-500 hover:text-gray-700"
+                              >
+                                <IoMdClose size={24} />
+                              </button>
+                            </div>
+
+                            <label className="block mb-2">
+                              Username:
+                              <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="border rounded p-1 w-full"
+                                required
+                              />
+                            </label>
+                            <label className="block mb-2">
+                              Email:
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="border rounded p-1 w-full"
+                                required
+                              />
+                            </label>
+                            <div className="flex justify-end mt-4">
+                              <button
+                                type="submit"
+                                className="text-sm text-white font-medium bg-blue-500 p-2 rounded-sm hover:bg-blue-700"
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    )}
                   </td>
                 </tr>
               ))}
