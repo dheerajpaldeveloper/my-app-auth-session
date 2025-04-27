@@ -4,12 +4,17 @@ import { FiSidebar } from "react-icons/fi";
 import { FaRegUserCircle } from "react-icons/fa";
 
 export default function header() {
-  const [username, setUsername] = useState("");
+  
+  const [username, setUsername] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    setUsername(username)
+  },[])
 
 
-  const  logOut = async()=>{
+  const logOut = async()=>{
   
     const res = await fetch("/api/logout", {
       method: "GET",
@@ -22,8 +27,11 @@ export default function header() {
       throw new Error(errText);
     }
     window.location.href = "/login"; // Force a full page reload
+  }
 
-    
+  const handleProfile = () => {
+    console.log("profile page")
+    window.location.href = '/profile'
   }
 
   return (
@@ -42,9 +50,9 @@ export default function header() {
 
         {menuOpen && (
           <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md p-3 z-50 text-sm">
-            <p className="mb-2 font-medium">Hello, {username}</p>
-            <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
-              Profile
+            <p className="mb-2 px-2 font-medium">Hello, {username}</p>
+            <button onClick={handleProfile} className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
+              Edit Profile
             </button>
             <button onClick={logOut} className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
               Logout
