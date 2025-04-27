@@ -7,10 +7,24 @@ export default function header() {
   const [username, setUsername] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    setUsername(storedUsername || "");
-  }, []);
+
+
+  const  logOut = async()=>{
+  
+    const res = await fetch("/api/logout", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+    window.location.href = "/login"; // Force a full page reload
+
+    
+  }
 
   return (
     <div className="flex justify-between align-middle py-4 px-4 bg-white shadow-sm">
@@ -32,7 +46,7 @@ export default function header() {
             <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
               Profile
             </button>
-            <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
+            <button onClick={logOut} className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">
               Logout
             </button>
           </div>

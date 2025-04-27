@@ -9,6 +9,7 @@ export default function Page() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [id, setId] = useState();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +32,8 @@ export default function Page() {
         }
 
         const result = await res.json();
+        //filter logic
+        
         setData(result);
       } catch (err: any) {
         setError(err.message);
@@ -68,6 +71,8 @@ export default function Page() {
         });
         const userData = await user.json();
         setData(userData);
+        setUsername('');
+        setEmail('');
         console.log("User data: ", userData);
       }
     } catch (error) {
@@ -81,10 +86,13 @@ export default function Page() {
     setIsUpdate(!isUpdate);
     setUsername(item.username);
     setEmail(item.email);
+    setId(item.id);
 
    
   };
-  const handleUpdate = async (id: any) => {
+
+  //for update api
+  const handleUpdate = async () => {
 
     console.log("Update item: ", username,email,id);
     try {
@@ -114,6 +122,9 @@ export default function Page() {
           });
           const userData = await user.json();
           setData(userData);
+          setUsername('');
+          setEmail('');
+
           console.log("User data: ", userData);
         }
         catch (error) {
@@ -154,6 +165,8 @@ export default function Page() {
         });
         const userData = await user.json();
         setData(userData);
+        setUsername('');
+        setEmail('');
         console.log("User data: ", userData);
       }
     } catch (error) {
@@ -242,55 +255,13 @@ export default function Page() {
         </form>
       )}
 
-      {error && <p className="text-red-500">Error: {error}</p>}
-
-      {data ? (
-        <div className="bg-gray-100 p-4 rounded shadow">
-          <table className="w-full border border-green-900 rounded-4xl">
-            <thead>
-              <tr>
-                <th className="border border-green-900 px-4 py-2">ID</th>
-                <th className="border border-green-900 px-4 py-2">Username</th>
-                <th className="border border-green-900 px-4 py-2">Email</th>
-                <th className="border border-green-900 px-4 py-2">
-                  Edit/Delete
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.data.map((item: any) => (
-                <tr key={item.id}>
-                  <td className="border border-green-900 px-4 py-2">
-                    {item.id}
-                  </td>
-                  <td className="border border-green-900 px-4 py-2">
-                    {item.username}
-                  </td>
-                  <td className="border border-green-900 px-4 py-2">
-                    {item.email}
-                  </td>
-                  <td className="border border-green-900 px-4 py-2">
-                    <div className="flex space-x-2 justify-center">
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="text-blue-500 hover:text-blue-700"
-                      >
-                        <MdOutlineModeEditOutline size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <MdDeleteForever size={20} />
-                      </button>
-                    </div>
-                    {/* Edit Form */}
-                    {isUpdate && (
+      {/* Edit Form */}
+      {isUpdate && (
                       <form
                         className="fixed inset-0 flex items-center justify-center"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          handleUpdate(item.id);
+                          handleUpdate();
                         }}
                       >
                         <div className="bg-white p-4 rounded shadow">
@@ -340,6 +311,50 @@ export default function Page() {
                         </div>
                       </form>
                     )}
+
+      {error && <p className="text-red-500">Error: {error}</p>}
+
+      {data ? (
+        <div className="bg-gray-100 p-4 rounded shadow">
+          <table className="w-full border border-green-900 rounded-4xl">
+            <thead>
+              <tr>
+                <th className="border border-green-900 px-4 py-2">ID</th>
+                <th className="border border-green-900 px-4 py-2">Username</th>
+                <th className="border border-green-900 px-4 py-2">Email</th>
+                <th className="border border-green-900 px-4 py-2">
+                  Edit/Delete
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.data.map((item: any) => (
+                <tr key={item.id}>
+                  <td className="border border-green-900 px-4 py-2">
+                    {item.id}
+                  </td>
+                  <td className="border border-green-900 px-4 py-2">
+                    {item.username}
+                  </td>
+                  <td className="border border-green-900 px-4 py-2">
+                    {item.email}
+                  </td>
+                  <td className="border border-green-900 px-4 py-2">
+                    <div className="flex space-x-2 justify-center">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <MdOutlineModeEditOutline size={20} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <MdDeleteForever size={20} />
+                      </button>
+                    </div>
+                    
                   </td>
                 </tr>
               ))}

@@ -17,7 +17,7 @@ export default async function AuthLayout({
 }>) {
   const isAuth = await isAuthenticated();
   
-  if (isAuth) {
+  if (isAuth) { //true
     redirect('/');
   }
 

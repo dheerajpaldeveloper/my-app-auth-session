@@ -15,9 +15,12 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+
+
   const isAuth = await isAuthenticated();
 
-  if (!isAuth) {
+  if (!isAuth) { // 
     redirect("/login");
   }
 

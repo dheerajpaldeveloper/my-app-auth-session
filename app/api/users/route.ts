@@ -36,8 +36,12 @@ export async function POST(request: Request) {
             );
         }
     
+        //filter logic 
+
+        
+        const admins = users.filter(user => user.role === 'user');
         return NextResponse.json(
-            { success: true, message: 'Users fetched successfully', data: users },
+            { success: true, message: 'Users fetched successfully', data: admins },
             { status: 200 }
         );
 
