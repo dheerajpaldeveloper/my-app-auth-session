@@ -8,10 +8,24 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null); // menu ke liye ref
 
+
+   // Function to handle storage events (fired when localStorage changes in another tab)
+   const handleStorageChange = (event:any) => {
+    if (event.key === 'username') {
+      setUsername(event.newValue); // Update state with the new value
+    }
+  };
+
   useEffect(() => {
-    const username = localStorage.getItem("username");
-    console.log("username 1: ",username)
-    setUsername(username);
+    const storedUsername = localStorage.getItem('username');
+    setUsername(storedUsername);
+    console.log('Initial username:', storedUsername);
+    window.addEventListener('storage', handleStorageChange);
+    // Cleanup the event listener on unmount
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+
   }, []);
 
   // use for click anywhere to close user icon  

@@ -45,11 +45,15 @@ export default function EditProfilePage() {
         console.error("Failed to update user.");
         return;
       }
-      // localStorage.setItem("username", data.data.username);
-      // localStorage.setItem("email", data.data.email);
-      // localStorage.setItem("role", data.data.role);
-      // localStorage.setItem("id", data.data.id);
-      // console.log("User updated successfully!",await res.json());
+      const data = await res.json();
+          console.log("User updated successfully!",data.data[0].username);
+      localStorage.setItem("username", data.data[0].username);
+      localStorage.setItem("email", data.data[0].email);
+      localStorage.setItem("role", data.data[0].role);
+      localStorage.setItem("id", data.data[0].id);
+
+      window.location.href = "/users";
+   
 
       // Clear fields after update
       setUsername("");

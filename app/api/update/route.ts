@@ -22,14 +22,13 @@ export async function POST(request: Request) {
   } else {
 
   
-    console.log("data : ", data[0].username)
 
-    localStorage.setItem("username", data[0].username);
-    localStorage.setItem("email", data[0].email);
-    localStorage.setItem("role", data[0].role);
-    localStorage.setItem("id", data[0].id);
+    // localStorage.setItem("username",usern);
+    // localStorage.setItem("email", data[0].email);
+    // localStorage.setItem("role", data[0].role);
+    // localStorage.setItem("id", data[0].id);
     return NextResponse.json(
-      { message: "User inserted successfully" },
+      { message: "User inserted successfully", data :data },
       { status: 200 }
     );
   }
