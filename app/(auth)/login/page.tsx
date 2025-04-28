@@ -30,15 +30,18 @@ export default function page() {
       }
 
       const data = await response.json();
-      console.log("Response :", response);
+      console.log("Response :", data.data.role);
       
       if (!data.success) {
         setError(data.message || 'Invalid username or password');
       }
       if (response.ok) {
-       console.log("res data", data.data.username);
-        // window.location.href = '/';
+        console.log("res data", data.data.username);
+        
         localStorage.setItem("username", data.data.username);
+        localStorage.setItem("email", data.data.email);
+        localStorage.setItem("role", data.data.role);
+        localStorage.setItem("id", data.data.id);
         window.location.href = "/";
         return;
       }

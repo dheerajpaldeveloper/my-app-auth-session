@@ -1,4 +1,4 @@
-"use client"; // 👈 Required for using hooks and browser APIs
+"use client";
 
 import React, { use, useEffect, useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
@@ -14,6 +14,7 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
+  const [role, setRole] = useState('')
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,7 +24,7 @@ export default function Page() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username: "username", password: "password" }),
+          body: JSON.stringify({ username: "username", password: "password"}),
         });
 
         if (!res.ok) {
@@ -51,9 +52,9 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, role }),
       });
-
+      console.log
       if (!res.ok) {
         console.error("Error creating user");
       } else {
@@ -62,6 +63,7 @@ export default function Page() {
         setUsername("");
         setEmail("");
         setPassword("");
+        setRole("")
         const user = await fetch("/api/users", {
           method: "POST",
           headers: {
@@ -73,6 +75,7 @@ export default function Page() {
         setData(userData);
         setUsername('');
         setEmail('');
+        setRole('')
         console.log("User data: ", userData);
       }
     } catch (error) {
@@ -231,6 +234,11 @@ export default function Page() {
                   required
                 />
               </label>
+              <select  value={role} onChange={(e) => setRole(e.target.value)} className="block mb-2">
+                <option value="">select</option>
+                <option value="admin">admin</option>
+                <option value="user">user</option>
+              </select>
               <label className="block mb-2">
                 Password:
                 <input
